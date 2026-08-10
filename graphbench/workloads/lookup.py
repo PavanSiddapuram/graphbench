@@ -7,6 +7,7 @@ asked the identical question.
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
@@ -34,7 +35,7 @@ def filtered_lookup_params(node_id: str) -> dict[str, Any]:
     return {"start_id": node_id, "ml_target": _filtered_lookup_ml_target()}
 
 
-PARAM_BUILDERS = {
+PARAM_BUILDERS: dict[str, Callable[[str], dict[str, Any]]] = {
     "point_lookup": point_lookup_params,
     "filtered_lookup": filtered_lookup_params,
 }

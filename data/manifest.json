@@ -1,0 +1,11 @@
+{
+  "edges_csv_sha256": "9d0cd6cab389cc4dd1781dde2df9e8ed86124233ec6031e2ab36af6d24ca345e",
+  "node_count": 37700,
+  "nodes_csv_sha256": "e675082a2efee2e22991c664a3314777c9d66587f4f6656f9e3afc48970d3f3f",
+  "relationship_count": 289003,
+  "retrieved_at_iso": "2026-08-10T17:15:53.769510+00:00",
+  "sample_method": "identity-already-in-range",
+  "sample_seed": null,
+  "source_license_url": "https://github.com/benedekrozemberczki/MUSAE/blob/master/LICENSE",
+  "source_url": "https://raw.githubusercontent.com/benedekrozemberczki/MUSAE/master/input/edges/git_edges.csv"
+}

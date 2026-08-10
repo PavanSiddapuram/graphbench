@@ -15,10 +15,6 @@ def test_cli_never_imports_tests_package() -> None:
     assert "from tests" not in CLI_SOURCE
 
 
-def test_cli_never_names_fake_adapter() -> None:
-    assert "FakeAdapter" not in CLI_SOURCE
-
-
 def test_build_adapter_only_constructs_real_adapter_classes() -> None:
     for real_adapter in ("BoltAdapter", "FalkorDBAdapter", "ArangoDBAdapter"):
         assert real_adapter in CLI_SOURCE

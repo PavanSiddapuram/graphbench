@@ -207,6 +207,7 @@ _No `filtered_lookup` runs recorded yet._
 **agg_by_label**
 
 _No `agg_by_label` runs recorded yet._
+
 <!-- END RESULTS -->
 
 ## Anomalies observed

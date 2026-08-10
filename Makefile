@@ -35,12 +35,12 @@ report:
 	$(PYTHON) cli.py report
 
 lint:
-	ruff check .
+	$(PYTHON) -m ruff check .
 
 typecheck:
-	mypy --strict graphbench/ cli.py analysis/
+	$(PYTHON) -m mypy --strict graphbench/ cli.py analysis/
 
 test:
-	pytest -q
+	$(PYTHON) -m pytest -q
 
 check: lint typecheck test

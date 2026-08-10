@@ -80,8 +80,10 @@ class BoltAdapter:
 
     def create_indexes(self) -> list[str]:
         statements = [
-            "CREATE CONSTRAINT developer_id_unique IF NOT EXISTS "
-            "FOR (n:Developer) REQUIRE n.id IS UNIQUE",
+            (
+                "CREATE CONSTRAINT developer_id_unique IF NOT EXISTS "
+                "FOR (n:Developer) REQUIRE n.id IS UNIQUE"
+            ),
             "CREATE INDEX developer_ml_target IF NOT EXISTS FOR (n:Developer) ON (n.ml_target)",
         ]
         with self._require_driver.session(database=self._database) as session:

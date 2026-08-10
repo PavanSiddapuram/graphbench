@@ -38,7 +38,7 @@ class FetchedFile:
 def _download(url: str, dest: Path, timeout_s: float = 60) -> FetchedFile:
     dest.parent.mkdir(parents=True, exist_ok=True)
     request = urllib.request.Request(url, headers={"User-Agent": "graphbench-dataset-fetch"})
-    with urllib.request.urlopen(request, timeout=timeout_s) as response:  # noqa: S310
+    with urllib.request.urlopen(request, timeout=timeout_s) as response:
         data = response.read()
     dest.write_bytes(data)
     return FetchedFile(url=url, path=dest, sha256=hashlib.sha256(data).hexdigest(), byte_count=len(data))

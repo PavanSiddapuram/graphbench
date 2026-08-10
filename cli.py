@@ -15,6 +15,7 @@ import json
 import os
 import subprocess
 import sys
+from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -27,7 +28,8 @@ from graphbench.core.runner import run_open_loop, run_read_workload
 from graphbench.core.sampler import StartNodes
 from graphbench.core.stats import group_by, summarize_records
 from graphbench.core.validate import format_diff, run_equality_gate
-from graphbench.workloads import aggregation, ingest as ingest_workload, lookup, mixed, traversal
+from graphbench.workloads import aggregation, lookup, mixed, traversal
+from graphbench.workloads import ingest as ingest_workload
 
 PLATFORMS_CONFIG = Path("config/platforms.yaml")
 WORKLOADS_CONFIG = Path("config/workloads.yaml")
@@ -35,7 +37,8 @@ RESULTS_RAW_DIR = Path("results/raw")
 
 
 def _load_yaml(path: Path) -> dict[str, Any]:
-    return yaml.safe_load(path.read_text())
+    data: dict[str, Any] = yaml.safe_load(path.read_text())
+    return data
 
 
 def _git_short_sha() -> str:
@@ -198,7 +201,7 @@ def cmd_bench(args: argparse.Namespace) -> None:
             for latency in rtt_samples
         )
 
-        param_builders = {
+        param_builders: dict[str, Callable[[str], dict[str, Any]]] = {
             **{name: traversal.param_builder for name in traversal.WORKLOAD_NAMES},
             **lookup.PARAM_BUILDERS,
         }
@@ -227,7 +230,7 @@ def cmd_bench(args: argparse.Namespace) -> None:
                     args.platform,
                     run_id,
                     workload,
-                    "mid",  # type: ignore[arg-type] - whole-graph query, band is not meaningful
+                    "mid",  # whole-graph query, band is not meaningful  # type: ignore[arg-type]
                     ["<whole-graph>"],
                     read_config["warmup_iterations"],
                     read_config["measured_iterations"],
@@ -260,7 +263,7 @@ def cmd_validate(args: argparse.Namespace) -> None:
         adapters[name] = adapter
 
     try:
-        node_parameterized = {
+        node_parameterized: dict[str, Callable[[str], dict[str, Any]]] = {
             **{name: traversal.param_builder for name in traversal.WORKLOAD_NAMES},
             **lookup.PARAM_BUILDERS,
         }

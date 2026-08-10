@@ -1,0 +1,14 @@
+[tool.mypy]
+python_version = "3.11"
+strict = true
+
+# None of these ship inline types or a stub package as of the pinned
+# versions in requirements.txt; ignoring missing imports here is scoped to
+# exactly these four, not a blanket relaxation.
+[[tool.mypy.overrides]]
+module = ["neo4j.*", "falkordb.*", "arango.*", "matplotlib.*"]
+ignore_missing_imports = true
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"

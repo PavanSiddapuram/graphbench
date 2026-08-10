@@ -28,9 +28,10 @@ from __future__ import annotations
 import csv
 import time
 from pathlib import Path
-from typing import Any, ClassVar
+from typing import Any, ClassVar, cast
 
 from arango.client import ArangoClient
+from arango.cursor import Cursor
 from arango.database import StandardDatabase
 
 from graphbench.core.adapter import ExecuteResult, FootprintResult, LoadResult
@@ -98,7 +99,10 @@ class ArangoDBAdapter:
         latencies: list[float] = []
         for _ in range(samples):
             start_ns = time.perf_counter_ns()
-            list(db.aql.execute("RETURN 1"))
+            # db.aql.execute() is typed to also cover async_req/batch job
+            # wrappers; this adapter never sets those, so the return is
+            # always a plain Cursor - see the same cast in execute() below.
+            list(cast(Cursor, db.aql.execute("RETURN 1")))
             end_ns = time.perf_counter_ns()
             latencies.append((end_ns - start_ns) / 1e6)
         return latencies
@@ -179,7 +183,7 @@ class ArangoDBAdapter:
         query = self.QUERIES[query_name]
         bind_vars = self._bind_vars(params)
         start_ns = time.perf_counter_ns()
-        cursor = self._require_db.aql.execute(query, bind_vars=bind_vars)
+        cursor = cast(Cursor, self._require_db.aql.execute(query, bind_vars=bind_vars))
         rows = list(cursor)
         end_ns = time.perf_counter_ns()
         normalized_rows = [row if isinstance(row, dict) else {"value": row} for row in rows]

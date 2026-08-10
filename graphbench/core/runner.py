@@ -14,7 +14,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from graphbench.core.adapter import Adapter
-from graphbench.core.record import DegreeBand, Record
+from graphbench.core.record import DegreeBand, Phase, Record
 
 
 def run_read_workload(
@@ -35,7 +35,7 @@ def run_read_workload(
 
     for i in range(total):
         node_id = node_ids[i % len(node_ids)]
-        phase = "warmup" if i < warmup_iterations else "measure"
+        phase: Phase = "warmup" if i < warmup_iterations else "measure"
         params = param_builder(node_id)
 
         start_ns = time.perf_counter_ns()
