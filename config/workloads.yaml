@@ -1,0 +1,43 @@
+# Iteration counts, degree-band definitions and the concurrency sweep.
+# Nothing here is a result - this is the plan the runner executes.
+
+dataset:
+  manifest: data/manifest.json
+  nodes_csv: data/nodes.csv
+  edges_csv: data/edges.csv
+  start_nodes: data/start_nodes.json
+
+sampling:
+  seed: 20260810
+  start_nodes_per_band: 40 # per degree band, replayed identically on every platform
+  degree_bands:
+    low: [10, 30] # percentile range of node degree
+    mid: [45, 55]
+    high: [90, 99]
+  equality_gate_sample_size: 20 # fixed nodes for validate.py, drawn from start_nodes
+
+ingest:
+  batch_size: 2000
+
+rtt_probe:
+  samples: 100
+
+lookup:
+  filtered_lookup_ml_target: "1" # fixed filter value, same on every platform
+
+read_workloads:
+  warmup_iterations: 20
+  measured_iterations: 100 # section 5.2 asks for >=100 per read workload after warm-up
+  workloads: [hop_1, hop_2, hop_3, point_lookup, filtered_lookup, agg_by_label]
+
+mixed_workload:
+  read_write_ratio: "80:20"
+  duration_seconds: 1200 # >=20 minutes so burst-credit exhaustion has room to appear
+  concurrency_sweep: [1, 10, 40]
+  intended_qps_per_client: 5 # open-loop target rate per client, before queue delay
+  queue_delay_trend_max_slope_ms_per_min: 5.0 # validity check: generator falling behind
+
+track_b:
+  cpu_limit: "0.5"
+  memory_caps_mb: [256, 512, 1024, 2048]
+  engines: [memgraph, falkordb] # self-hostable subset of platforms.yaml (track_b: true)

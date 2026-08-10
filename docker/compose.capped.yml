@@ -1,0 +1,41 @@
+# Track B: self-hosted engines capped to --cpus=0.5 --memory=256m (and the
+# 256/512/1024/2048 MB memory sweep), per CLAUDE.md's "Two tracks" rule.
+#
+# Only the two adapters marked track_b: true in config/platforms.yaml
+# (memgraph, falkordb) are self-hostable here. This file has not been run
+# in the environment this repo was built in - Docker networking to
+# arbitrary images was not verified reachable, and no memory-sweep results
+# exist yet. See results/failures.md and Makefile's `capped` target, which
+# intentionally exits 1 rather than claim a sweep that never happened.
+#
+# Usage once network access is available:
+#   docker compose -f docker/compose.capped.yml up -d
+#   (then re-run with MEMORY_LIMIT overridden for the 512/1024/2048 MB steps)
+
+services:
+  memgraph:
+    image: memgraph/memgraph:2.18.1
+    ports:
+      - "7687:7687"
+    deploy:
+      resources:
+        limits:
+          cpus: "${CPU_LIMIT:-0.5}"
+          memory: "${MEMORY_LIMIT:-256m}"
+    # docker compose (non-swarm) does not enforce `deploy.resources` by
+    # default; the cli flags below are the ones that actually apply the
+    # cap outside swarm mode.
+    cpus: "${CPU_LIMIT:-0.5}"
+    mem_limit: "${MEMORY_LIMIT:-256m}"
+
+  falkordb:
+    image: falkordb/falkordb:v4.10.0
+    ports:
+      - "6379:6379"
+    deploy:
+      resources:
+        limits:
+          cpus: "${CPU_LIMIT:-0.5}"
+          memory: "${MEMORY_LIMIT:-256m}"
+    cpus: "${CPU_LIMIT:-0.5}"
+    mem_limit: "${MEMORY_LIMIT:-256m}"

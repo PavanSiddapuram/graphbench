@@ -1,0 +1,110 @@
+# One block per platform. Credentials are never stored here - only the
+# *names* of the environment variables that hold them (see .env.example).
+#
+# `advertised_specs` fields set to `null` are genuinely unknown: the
+# corresponding provider docs/console were unreachable from the environment
+# this file was authored in (see results/failures.md and CLAUDE.md's
+# "Known environment constraint" note). Fill them in from the provider's
+# console/pricing page during Stage 0 - do not guess a number here. The one
+# exception is CognoDB, whose free-tier specs are quoted directly from
+# section 3 of docs/assignment.pdf, a primary source already in hand.
+#
+# query_language is documentation metadata only; the actual queries live in
+# each adapter's QUERIES dict (graphbench/adapters/<adapter>.py) so the
+# "same logical queries" claim can be audited in one place.
+
+platforms:
+  cognodb:
+    display_name: CognoDB Cloud
+    adapter: bolt
+    query_language: cypher
+    connection:
+      uri_env: COGNODB_URI
+      user_env: COGNODB_USER # expected value: "cognodb"
+      password_env: COGNODB_PASSWORD
+      database_env: COGNODB_DATABASE # optional, driver default used if unset
+    advertised_specs:
+      vcpu: 0.5 # burstable, per assignment PDF section 3
+      ram_mb: 256
+      disk_gb: 1
+      region: null # fill in from console at signup time
+      card_required: false
+      source: docs/assignment.pdf section 3
+    track_a: true
+    track_b: false
+
+  neo4j_aura:
+    display_name: Neo4j AuraDB Free
+    adapter: bolt
+    query_language: cypher
+    connection:
+      uri_env: NEO4J_AURA_URI
+      user_env: NEO4J_AURA_USER # expected value: "neo4j"
+      password_env: NEO4J_AURA_PASSWORD
+      database_env: NEO4J_AURA_DATABASE
+    advertised_specs:
+      vcpu: null
+      ram_mb: null
+      disk_gb: null
+      region: null
+      card_required: null
+      source: null # TODO: https://neo4j.com/pricing/ was unreachable; fill in at signup
+    track_a: true
+    track_b: false
+
+  memgraph:
+    display_name: Memgraph Cloud (free tier)
+    adapter: bolt
+    query_language: cypher
+    connection:
+      uri_env: MEMGRAPH_URI
+      user_env: MEMGRAPH_USER
+      password_env: MEMGRAPH_PASSWORD
+      database_env: MEMGRAPH_DATABASE
+    advertised_specs:
+      vcpu: null
+      ram_mb: null
+      disk_gb: null
+      region: null
+      card_required: null
+      source: null # TODO: https://memgraph.com/pricing was unreachable; fill in at signup
+    track_a: true
+    track_b: true # Memgraph also self-hostable in docker/compose.capped.yml
+
+  falkordb:
+    display_name: FalkorDB Cloud (free tier)
+    adapter: falkordb
+    query_language: cypher # FalkorDB implements a Cypher subset over RESP
+    connection:
+      host_env: FALKORDB_HOST
+      port_env: FALKORDB_PORT
+      password_env: FALKORDB_PASSWORD
+      graph_name_env: FALKORDB_GRAPH_NAME
+    advertised_specs:
+      vcpu: null
+      ram_mb: null
+      disk_gb: null
+      region: null
+      card_required: null
+      source: null # TODO: https://falkordb.com was unreachable; fill in at signup
+    track_a: true
+    track_b: true # FalkorDB also self-hostable in docker/compose.capped.yml
+
+  arangodb:
+    display_name: ArangoDB Oasis (free trial)
+    adapter: arangodb
+    query_language: aql # deliberately non-Cypher, per assignment section 4
+    connection:
+      url_env: ARANGODB_URL
+      user_env: ARANGODB_USER
+      password_env: ARANGODB_PASSWORD
+      database_env: ARANGODB_DATABASE
+    advertised_specs:
+      vcpu: null
+      ram_mb: null
+      disk_gb: null
+      region: null
+      card_required: null
+      source: null # TODO: https://cloud.arangodb.com was unreachable; fill in at signup
+    track_a: true
+    track_b: false
